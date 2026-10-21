@@ -1,0 +1,102 @@
+# cable-pooling-sizer: default assumptions.
+#
+# ALL COST AND FINANCE VALUES BELOW ARE ILLUSTRATIVE ASSUMPTIONS FOR A PORTFOLIO MODEL, NOT INVESTMENT ADVICE.
+# They are rounded, real (2025) PLN, pre-tax, and taken from public sources where one exists (cited next to
+# each value). Real projects differ by site, contract and year; change the values here and re-run `economics`.
+
+[period]
+# Hourly ERA5 weather: used for complementarity statistics and inter-annual variability.
+weather_start = "2020-01-01"
+weather_end = "2026-09-30"
+# Economic window: RCE prices (business dates, Europe/Warsaw) and the matching weather, two full years Oct-Sep.
+economics_start = "2024-10-01"
+economics_end = "2026-09-30"
+
+# ERA5 grid points for three illustrative locations (any coordinates in Poland work).
+[[sites]]
+key = "north"
+name = "North (Pomerania, near Słupsk)"
+latitude = 54.45
+longitude = 16.95
+
+[[sites]]
+key = "central"
+name = "Central (Kuyavia, near Inowrocław)"
+latitude = 52.75
+longitude = 18.25
+
+[[sites]]
+key = "southeast"
+name = "South-east (Lublin region, near Zamość)"
+latitude = 50.70
+longitude = 23.25
+
+[pv]
+# Fixed-tilt, south-facing utility-scale plant; capacity is MWp (DC).
+tilt_deg = 30.0
+azimuth_deg = 180.0
+albedo = 0.20
+dc_ac_ratio = 1.20              # inverter AC rating = MWp / dc_ac_ratio
+gamma_pdc = -0.0035             # power temperature coefficient, 1/K (mono c-Si)
+dc_losses = 0.08                # soiling, mismatch, wiring, LID, availability
+inverter_efficiency = 0.98
+degradation_per_year = 0.004
+
+[wind]
+# Senvion MM92 empirical curve from open Kelmarsh SCADA (see src/cable_pooling/data/mm92_kelmarsh_2017.csv).
+hub_height_m = 100.0            # ERA5 gives wind at 100 m; other heights use the hourly 10-100 m shear exponent
+losses = 0.12                   # wakes ~7 %, availability ~3 %, electrical ~2 %
+cut_out_ms = 25.0
+
+[bess]
+round_trip_efficiency = 0.87    # AC-AC, Li-ion LFP
+soc_min = 0.05
+soc_max = 0.95
+soc_start = 0.50                # also the minimum at the end of the horizon
+degradation_cost_pln_per_mwh = 25.0   # per MWh discharged; also charged as variable cost in the NPV
+
+[sizing]
+# Capacities as multiples of the grid connection capacity G (the physics is linear in G).
+pv_ratios = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5]   # MWp per MW of connection
+wind_ratios = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]          # MW per MW of connection
+# Battery options: [power as a multiple of G, duration in hours]; [0, 0] = no battery.
+bess_options = [[0.0, 0.0], [0.25, 2.0], [0.5, 2.0], [0.5, 4.0], [1.0, 2.0], [1.0, 4.0], [1.0, 6.0], [1.5, 4.0]]
+# Connection sizes offered in the dashboard (MW). Only the fixed grid cost below makes them differ per MW.
+connection_sizes_mw = [10.0, 25.0, 50.0]
+
+[costs]
+fx_usd_pln = 3.76   # NBP table A, average of 2025 daily mid rates (api.nbp.pl)
+
+# PV: IRENA, Renewable Power Generation Costs in 2024 (2025): global weighted-average total installed cost
+# USD 691/kW (about 2.6 m PLN/MW). Polish turnkey offers for small ready-built farms in 2025 were around
+# 2.3-2.75 m PLN/MW (gramwzielone.pl marketplace). Assumed:
+pv_capex_pln_per_mwp = 2.5e6
+pv_opex_pln_per_mwp_year = 45.0e3     # O&M, insurance, land lease, security (assumed, ~1.8 % of CAPEX)
+
+# Wind: model 30 MW onshore farm at 7.5 m PLN/MW in Baker Tilly TPA, "Wind Energy in Poland 2026" (2026).
+# IRENA's 2024 global average (USD 1,041/kW) is dominated by China and is too low for Poland.
+wind_capex_pln_per_mw = 7.5e6
+wind_opex_pln_per_mw_year = 250.0e3   # full-service O&M, lease, insurance, property tax (assumed, ~3.3 %)
+
+# Battery: IRENA 2024 total installed cost of utility-scale BESS USD 192/kWh (global, ~0.72 m PLN/MWh);
+# Ember: USD 125/kWh for a grid-connected 4 h+ system outside China and the US, October 2025 (as reported by
+# ESS News, Dec 2025). Assumed here: energy part plus a power part (PCS, MV transformer, EPC), i.e. about
+# USD 206/kWh for a 4 h and 226/kWh for a 2 h system - above both references, on the cautious side.
+bess_capex_pln_per_mwh = 0.70e6
+bess_capex_pln_per_mw = 0.30e6
+bess_opex_share_of_capex = 0.015      # per year
+bess_replacement_year = 13            # augmentation / replacement after ~5,000 cycles or calendar ageing
+bess_replacement_share = 0.50         # of initial BESS CAPEX (cost decline assumed)
+
+# Grid connection: site-specific, no public benchmark. Assumed fixed part (HV bay, line, substation building)
+# plus a per-MW part (transformer, connection fee). Paid once for the connection capacity G.
+grid_capex_fixed_pln = 4.0e6
+grid_capex_pln_per_mw = 0.35e6
+grid_opex_pln_year = 150.0e3          # substation O&M, metering, insurance
+
+[finance]
+# Real, pre-tax discount rate. IRENA assumes a 3.8 % cost of capital for European onshore wind in 2024 (mostly
+# contracted projects); a merchant project on spot prices carries more risk, so 7 % is used here.
+discount_rate = 0.07
+lifetime_years = 25
+# Prices of the economic window are repeated in every year (flat real prices), see README limitations.

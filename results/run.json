@@ -1,0 +1,51 @@
+{
+  "version": "0.1.0",
+  "python": "3.13.7",
+  "pandas": "3.0.6",
+  "weather_period": [
+    "2020-01-01",
+    "2026-09-30"
+  ],
+  "economic_window": [
+    "2024-10-01",
+    "2026-09-30"
+  ],
+  "hours": 17520,
+  "configurations_per_site": 856,
+  "rce_mean_pln_mwh": 469.905118436073,
+  "rce_negative_hours": 716,
+  "report_grid_mw": 25.0,
+  "best": [
+    {
+      "site": "central",
+      "pv_mwp": 62.5,
+      "wind_mw": 12.5,
+      "battery": "1 G x 4 h",
+      "oversizing": 3.0,
+      "curtailed_pct": 9.954270721397167,
+      "npv_pln": 68743337.89251204,
+      "lcoe_pln_mwh": 445.9236133769432
+    },
+    {
+      "site": "north",
+      "pv_mwp": 37.5,
+      "wind_mw": 31.25,
+      "battery": "1 G x 4 h",
+      "oversizing": 2.75,
+      "curtailed_pct": 8.919975795822147,
+      "npv_pln": 201982251.7018268,
+      "lcoe_pln_mwh": 374.2760509254782
+    },
+    {
+      "site": "southeast",
+      "pv_mwp": 62.5,
+      "wind_mw": 12.5,
+      "battery": "1 G x 4 h",
+      "oversizing": 3.0,
+      "curtailed_pct": 9.921183450886138,
+      "npv_pln": 82468618.83647008,
+      "lcoe_pln_mwh": 438.88148085236736
+    }
+  ],
+  "report_seconds": 15.7
+}
