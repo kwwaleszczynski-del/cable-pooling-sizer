@@ -298,7 +298,7 @@ python -m cable_pooling run --workers 8
 config/default.toml       sites, technology, sizing grid, costs and finance (with sources)
 src/cable_pooling/
   openmeteo.py            ERA5 client (Open-Meteo archive), weight ledger, time conventions
-  pse_api.py              RCE client (PSE API), pagination, monthly cache, hourly aggregation
+  pse_api.py              RCE through pse-opendata (monthly Parquet cache), hourly aggregation
   pvgis.py                PVGIS-SARAH3 irradiance cross-check
   pv.py, wind.py          generation models (pvlib; MM92 curve in data/mm92_kelmarsh_2017.csv)
   dispatch.py             export / storage / curtailment LP behind the connection
