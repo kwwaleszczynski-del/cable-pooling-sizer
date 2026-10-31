@@ -246,7 +246,7 @@ function drawHeat(c) {
     marker: {symbol: "star", size: 16, color: css("--ink"), line: {color: css("--surface"), width: 2}}};
   Plotly.react("heat", [heat, star], layout({
     title: {text: `${meta.label} [${meta.unit}], ${c.bess}`, x: 0.02, font: {size: 14, color: css("--ink")}},
-    xaxis: {title: "PV [MWp]", type: "category", linecolor: css("--axis")},
+    xaxis: {title: "PV [MWp]", type: "category", linecolor: css("--axis"), automargin: true},  // rotated labels on phones push the title down
     yaxis: {title: "Wind [MW]", type: "category", linecolor: css("--axis")},
   }), CONF);
 }
