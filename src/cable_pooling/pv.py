@@ -1,11 +1,13 @@
-"""Hourly AC output of a fixed-tilt PV plant per MWp, from ERA5 irradiance with pvlib.
+"""Hourly output of a fixed-tilt PV plant per MWp at the connection point, from ERA5 irradiance with pvlib.
 
-Chain: solar position at the middle of each hour -> DNI from GHI and DHI -> Perez transposition to the plane of
-array -> incidence angle modifier on the beam -> SAPM cell temperature -> PVWatts DC power with temperature
-coefficient and DC losses -> PVWatts inverter, clipped at the AC rating (MWp / DC-AC ratio).
+Chain: solar position at the middle of each hour -> DNI from GHI and DHI (at most 1.1 x Ineichen clear-sky DNI for
+zenith 80-88 deg, zero beyond) -> Perez transposition to the plane of array -> incidence angle modifier on the beam
+-> SAPM cell temperature -> PVWatts DC power with temperature coefficient and DC losses -> PVWatts inverter, clipped
+at the AC rating (MWp / DC-AC ratio) -> AC losses up to the connection point and availability.
 
 Usage:
     pv = pv_power_per_mwp(hourly, latitude=52.75, longitude=18.25, elevation_m=88, params=PVParams())
+    poa = plane_of_array(hourly, 52.75, 18.25, 88, PVParams())     # poa_global, poa_effective, W/m2
 """
 from __future__ import annotations
 
@@ -19,15 +21,19 @@ HALF_HOUR = pd.Timedelta("30min")
 TEMP_PARAMS = pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS["sapm"]["open_rack_glass_glass"]
 
 
-def pv_power_per_mwp(hourly: pd.DataFrame, latitude: float, longitude: float, elevation_m: float,
-                     params: PVParams) -> pd.Series:
-    """MW AC per MWp for hourly intervals indexed by their start (UTC); needs ghi, dhi, temp_air, wind_10m."""
+def plane_of_array(hourly: pd.DataFrame, latitude: float, longitude: float, elevation_m: float,
+                   params: PVParams) -> pd.DataFrame:
+    """Plane-of-array irradiance per hourly interval (W/m2): global, and effective (beam after the IAM)."""
     mid = hourly.index + HALF_HOUR
     solpos = pvlib.solarposition.get_solarposition(mid, latitude, longitude, altitude=elevation_m)
     zenith = solpos["apparent_zenith"].to_numpy()
     ghi = hourly["ghi"].to_numpy(dtype=float)
     dhi = np.minimum(hourly["dhi"].to_numpy(dtype=float), ghi)
-    dni = pvlib.irradiance.dni(ghi, dhi, zenith, zenith_threshold_for_zero_dni=88.0)
+    clear = pvlib.location.Location(latitude, longitude, altitude=elevation_m).get_clearsky(
+        mid, model="ineichen", solar_position=solpos)
+    # Series in: pvlib applies the clear-sky limit by index assignment
+    dni = pvlib.irradiance.dni(pd.Series(ghi, index=mid), pd.Series(dhi, index=mid), solpos["apparent_zenith"],
+                               dni_clear=clear["dni"], zenith_threshold_for_zero_dni=88.0)
     dni = np.nan_to_num(np.asarray(dni, dtype=float), nan=0.0).clip(min=0.0)
     dni_extra = pvlib.irradiance.get_extra_radiation(mid).to_numpy()
     airmass = pvlib.atmosphere.get_relative_airmass(zenith)
@@ -37,7 +43,16 @@ def pv_power_per_mwp(hourly: pd.DataFrame, latitude: float, longitude: float, el
     aoi = pvlib.irradiance.aoi(params.tilt_deg, params.azimuth_deg, zenith, solpos["azimuth"].to_numpy())
     iam = pvlib.iam.physical(aoi)
     poa_eff = np.nan_to_num(np.asarray(poa["poa_direct"]) * iam + np.asarray(poa["poa_diffuse"]), nan=0.0)
-    poa_eff = poa_eff.clip(min=0.0)
+    poa_global = np.nan_to_num(np.asarray(poa["poa_global"], dtype=float), nan=0.0)
+    return pd.DataFrame({"poa_global": poa_global.clip(min=0.0), "poa_effective": poa_eff.clip(min=0.0)},
+                        index=hourly.index)
+
+
+def pv_power_per_mwp(hourly: pd.DataFrame, latitude: float, longitude: float, elevation_m: float,
+                     params: PVParams) -> pd.Series:
+    """MW per MWp at the connection point for hourly intervals indexed by their start (UTC); needs ghi, dhi,
+    temp_air, wind_10m."""
+    poa_eff = plane_of_array(hourly, latitude, longitude, elevation_m, params)["poa_effective"].to_numpy()
     t_cell = pvlib.temperature.sapm_cell(poa_eff, hourly["temp_air"].to_numpy(), hourly["wind_10m"].to_numpy(),
                                          **TEMP_PARAMS)
     pdc = pvlib.pvsystem.pvwatts_dc(poa_eff, t_cell, 1.0, params.gamma_pdc) * (1.0 - params.dc_losses)
@@ -45,4 +60,5 @@ def pv_power_per_mwp(hourly: pd.DataFrame, latitude: float, longitude: float, el
     pac = pvlib.inverter.pvwatts(np.asarray(pdc, dtype=float), ac_rating / params.inverter_efficiency,
                                  eta_inv_nom=params.inverter_efficiency)
     pac = np.clip(np.nan_to_num(np.asarray(pac, dtype=float), nan=0.0), 0.0, ac_rating)
+    pac = pac * (1.0 - params.ac_losses) * params.availability
     return pd.Series(pac, index=hourly.index, name="pv")

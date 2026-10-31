@@ -31,16 +31,16 @@ the best ratios are the same for 10 and 50 MW (see [Scale](#scale)).
 
 | Site | PV yield | Wind CF | Correlation PV vs wind (hourly / daily / monthly) | PV capture rate | Wind capture rate | PV energy produced at negative prices |
 |---|---|---|---|---|---|---|
-| North | 1,180 kWh/kWp | 38.5 % | -0.15 / -0.34 / -0.75 | 57 % | 91 % | 16 % |
-| Central | 1,172 kWh/kWp | 26.7 % | -0.16 / -0.30 / -0.70 | 57 % | 87 % | 16 % |
-| South-east | 1,205 kWh/kWp | 25.1 % | -0.18 / -0.30 / -0.71 | 60 % | 91 % | 15 % |
+| North | 1,079 kWh/kWp | 38.5 % | -0.15 / -0.34 / -0.75 | 57 % | 91 % | 16 % |
+| Central | 1,071 kWh/kWp | 26.7 % | -0.16 / -0.30 / -0.70 | 57 % | 87 % | 16 % |
+| South-east | 1,102 kWh/kWp | 25.1 % | -0.18 / -0.30 / -0.71 | 60 % | 91 % | 15 % |
 
-Yield and capacity factor: ERA5 2020-2025 (full years). Capture rate: generation-weighted RCE divided by the
-average RCE, over the price window.
+Yield (at the connection point, per kWp DC) and capacity factor: ERA5 2020-2025 (full years). Capture rate:
+generation-weighted RCE divided by the average RCE, over the price window.
 
 - Wind blows more at night and in winter, PV produces at midday in summer: the correlation is weakly negative
   hour by hour and strongly negative month by month. A plant with 1 MWp of PV and 1 MW of wind on a 1 MW
-  connection would exceed the connection in only 3-8 % of hours.
+  connection would exceed the connection in only 2.5-6.7 % of hours.
 - **PV earns 57-60 % of the average price**, wind 87-91 %: PV floods the market at midday and 15-16 % of its
   energy falls into hours with negative RCE.
 
@@ -52,23 +52,23 @@ Best configuration per site (highest NPV), without a battery and with the best b
 
 | Site | Battery | PV | Wind | Installed / connection | Curtailed (grid-limited / price-driven) | Connection utilisation | NPV | LCOE [PLN/MWh] | Capture price [PLN/MWh] |
 |---|---|---|---|---|---|---|---|---|---|
-| North | none | 25 MWp | 31.25 MW | 2.25 x | 13.1 % (7.0 / 6.1) | 53 % | 173 m PLN | 310 | 439 |
-| North | 25 MW / 100 MWh | 37.5 MWp | 31.25 MW | 2.75 x | 8.9 % (5.9 / 3.0) | 60 % | 202 m PLN | 374 | 507 |
-| Central | none | 37.5 MWp | 18.75 MW | 2.25 x | 13.5 % (4.0 / 9.5) | 34 % | 18 m PLN | 374 | 395 |
-| Central | 25 MW / 100 MWh | 62.5 MWp | 12.5 MW | 3.00 x | 10.0 % (7.4 / 2.6) | 40 % | 69 m PLN | 446 | 514 |
-| South-east | none | 43.75 MWp | 0 MW | 1.75 x | 19.7 % (6.5 / 13.2) | 20 % | 29 m PLN | 295 | 353 |
-| South-east | 25 MW / 100 MWh | 62.5 MWp | 12.5 MW | 3.00 x | 9.9 % (7.6 / 2.3) | 41 % | 82 m PLN | 439 | 519 |
+| North | none | 12.5 MWp | 31.25 MW | 1.75 x | 10.1 % (4.3 / 5.8) | 48 % | 168 m PLN | 309 | 447 |
+| North | 25 MW / 50 MWh | 25 MWp | 31.25 MW | 2.25 x | 8.4 % (4.2 / 4.3) | 54 % | 194 m PLN | 352 | 495 |
+| Central | none | 37.5 MWp | 25 MW | 2.50 x | 12.6 % (4.0 / 8.6) | 39 % | 8 m PLN | 397 | 405 |
+| Central | 25 MW / 100 MWh | 62.5 MWp | 18.75 MW | 3.25 x | 8.6 % (6.1 / 2.5) | 44 % | 52 m PLN | 465 | 512 |
+| South-east | none | 43.75 MWp | 0 MW | 1.75 x | 17.7 % (3.8 / 13.9) | 19 % | 16 m PLN | 315 | 349 |
+| South-east | 25 MW / 100 MWh | 62.5 MWp | 12.5 MW | 3.00 x | 8.0 % (5.6 / 2.4) | 39 % | 65 m PLN | 460 | 526 |
 
 "Installed / connection" is (PV MWp + wind MW) / G. Utilisation: exported MWh / (G x 8,760 h). The capture
 price with a battery includes the energy it shifts to expensive hours.
 
-- **Oversizing pays at every site.** Without a battery the best plant has 1.75-2.25 times the connection
-  capacity installed, with a battery 2.75-3 times. The optimum is flat near the top (see the frontier below),
+- **Oversizing pays at every site.** Without a battery the best plant has 1.75-2.5 times the connection
+  capacity installed, with a battery 2.25-3.25 times. The optimum is flat near the top (see the frontier below),
   so the range of good designs is wide.
-- **Accepting 9-20 % curtailment is optimal.** The last MW added is worth building as long as the extra energy it
+- **Accepting 8-18 % curtailment is optimal.** The last MW added is worth building as long as the extra energy it
   sells covers its cost, even when a growing share of its output is cut.
 - **Negative prices, not the connection, cause most of the curtailment of PV-heavy plants.** Without a battery,
-  9.5 of the 13.5 curtailed percentage points in Central and 13.2 of 19.7 in the South-east come from hours with
+  8.6 of the 12.6 curtailed percentage points in Central and 13.9 of 17.7 in the South-east come from hours with
   negative prices. A PV-only plant smaller than its connection still curtails 15-16 % of its energy.
 - **Wind makes the North; PV dominates elsewhere.** At 38.5 % capacity factor wind carries the northern project;
   with a 25 % capacity factor in the South-east, wind does not pay without a battery and the best plant is
@@ -88,14 +88,16 @@ curtailment of that best plant:
 **At the assumed costs and with the 2024-2026 price spreads repeated for 25 years, yes**, and it is the least
 robust result of the study.
 
-- The best battery is **1 MW and 4 MWh per MW of connection** at all three sites. Larger options (1 G x 6 h,
-  1.5 G x 4 h) are worse, so the optimum lies inside the search grid.
-- Added to the best plant without a battery (PV and wind sizes unchanged), the 25 MW / 100 MWh battery
-  (77.5 m PLN CAPEX) raises NPV by 26 m PLN (North), 40 m PLN (Central) and 33 m PLN (South-east), at 263-322 full
-  cycles per year. Re-sizing PV and wind around it adds more: 29-54 m PLN over the best plant without a battery.
-- The battery turns cheap midday PV into evening sales and cuts price-driven curtailment by half or more; it
-  also makes wind attractive in the South-east.
-- With **prices 20 % lower** the battery gain falls to 5-8 m PLN and the best battery shrinks to 0.5-1 G x 2 h,
+- The best battery is **1 MW and 4 MWh per MW of connection** in Central and the South-east; in the wind-heavy
+  North 1 MW and 2 MWh is marginally better (by 1.6 m PLN). Larger options (1 G x 6 h, 1.5 G x 4 h) are worse at
+  all three sites, so the optimum lies inside the search grid.
+- Added to the best plant without a battery (PV and wind sizes unchanged), the best battery raises NPV by 24 m PLN
+  (North, 25 MW / 50 MWh, 42.5 m PLN CAPEX), 38 m PLN (Central) and 29 m PLN (South-east; 25 MW / 100 MWh,
+  77.5 m PLN CAPEX), at 260-335 full cycles per year. Re-sizing PV and wind around it adds more: 26-48 m PLN over
+  the best plant without a battery.
+- The battery turns cheap midday PV into evening sales and cuts price-driven curtailment by a third (North) to
+  four fifths (South-east); it also makes wind attractive in the South-east.
+- With **prices 20 % lower** the battery gain falls to 0.7-5 m PLN and the best battery shrinks to 0.25-1 G x 2 h,
   see [Sensitivity](#sensitivity). Perfect foresight also overstates what a real operator would earn.
 
 ![dispatch week](docs/img/dispatch_week.png)
@@ -107,18 +109,19 @@ Economics only: the dispatch is not re-optimised (for lower prices this makes th
 
 | Case | North | Central | South-east |
 |---|---|---|---|
-| base | 37.5 + 31.25, 1 G x 4 h, **202** | 62.5 + 12.5, 1 G x 4 h, **69** | 62.5 + 12.5, 1 G x 4 h, **82** |
-| discount rate 5 % | 50 + 31.25, 1 G x 4 h, **332** | 62.5 + 25, 1 G x 4 h, **166** | 75 + 18.75, 1 G x 6 h, **179** |
-| discount rate 9 % | 18.75 + 31.25, 1 G x 2 h, **116** | 62.5 + 0, 1 G x 4 h, **13** | 62.5 + 0, 1 G x 4 h, **30** |
-| PV CAPEX -20 % | 50 + 31.25, 1 G x 4 h, **224** | 75 + 12.5, 1 G x 4 h, **102** | 87.5 + 0, 1 G x 6 h, **118** (PV at the grid limit) |
-| wind CAPEX -20 % | 37.5 + 31.25, 1 G x 4 h, **249** | 50 + 31.25, 1 G x 4 h, **104** | 62.5 + 25, 1 G x 4 h, **111** |
-| battery CAPEX -30 % | 37.5 + 31.25, 1 G x 4 h, **234** | 75 + 12.5, 1.5 G x 4 h, **108** | 75 + 6.25, 1 G x 6 h, **125** |
-| prices -20 % | 6.25 + 31.25, 0.5 G x 2 h, **72** | 43.75 + 0, 1 G x 2 h, **-9** | 50 + 0, 1 G x 2 h, **4** |
+| base | 25 + 31.25, 1 G x 2 h, **194** | 62.5 + 18.75, 1 G x 4 h, **52** | 62.5 + 12.5, 1 G x 4 h, **65** |
+| discount rate 5 % | 43.75 + 31.25, 1 G x 4 h, **319** | 62.5 + 25, 1 G x 4 h, **148** | 62.5 + 25, 1 G x 4 h, **158** |
+| discount rate 9 % | 12.5 + 31.25, 1 G x 2 h, **112** | 50 + 0, 1 G x 4 h, **-2** | 62.5 + 0, 1 G x 4 h, **13** |
+| PV CAPEX -20 % | 50 + 31.25, 1 G x 4 h, **212** | 75 + 12.5, 1 G x 4 h, **85** | 75 + 6.25, 1 G x 4 h, **99** |
+| wind CAPEX -20 % | 18.75 + 37.5, 1 G x 2 h, **242** | 50 + 31.25, 1 G x 4 h, **89** | 50 + 31.25, 1 G x 4 h, **95** |
+| battery CAPEX -30 % | 31.25 + 31.25, 1 G x 4 h, **224** | 75 + 12.5, 1.5 G x 4 h, **88** | 75 + 6.25, 1.5 G x 4 h, **104** |
+| prices -20 % | 6.25 + 31.25, 0.5 G x 2 h, **70** | 6.25 + 0, 0.25 G x 2 h, **-15** | 43.75 + 0, 1 G x 2 h, **-9** |
 
-- The optimal oversizing moves with the cost of capital: 2.0-2.5 times at 9 %, 3.25-3.75 times at 5 %.
-- **The price level matters most.** With prices 20 % lower only the windy North stays clearly profitable; in
-  Central no size combination has a positive NPV.
-- Revenue of the best plants was 13-17 % higher in October 2025 - September 2026 than a year earlier (average RCE
+- The optimal oversizing moves with the cost of capital: 1.75-2.5 times at 9 %, 3-3.5 times at 5 %. At 9 % no
+  plant in Central has a positive NPV.
+- **The price level matters most.** With prices 20 % lower only the windy North stays profitable; in Central and
+  the South-east no size combination has a positive NPV.
+- Revenue of the best plants was 13-16 % higher in October 2025 - September 2026 than a year earlier (average RCE
   500 vs 440 PLN/MWh), a reminder of how short a two-year price window is.
 
 ### Scale
@@ -128,9 +131,9 @@ the fixed part of the grid connection cost differs. NPV per MW of connection (be
 
 | Connection | North | Central | South-east |
 |---|---|---|---|
-| 10 MW | 7.7 m PLN/MW | 2.4 m PLN/MW | 3.0 m PLN/MW |
-| 25 MW | 8.1 m PLN/MW | 2.7 m PLN/MW | 3.3 m PLN/MW |
-| 50 MW | 8.2 m PLN/MW | 2.9 m PLN/MW | 3.4 m PLN/MW |
+| 10 MW | 7.4 m PLN/MW | 1.7 m PLN/MW | 2.2 m PLN/MW |
+| 25 MW | 7.7 m PLN/MW | 2.1 m PLN/MW | 2.6 m PLN/MW |
+| 50 MW | 7.9 m PLN/MW | 2.2 m PLN/MW | 2.7 m PLN/MW |
 
 The [dashboard](https://kwwaleszczynski-del.github.io/cable-pooling-sizer/) shows every heatmap (NPV, LCOE,
 curtailment, utilisation, capture price) for each site, connection size and battery option.
@@ -164,8 +167,19 @@ about 1.6 GW in 2024).
 ### Generation
 
 **PV** (fixed tilt 30 deg, south, DC/AC ratio 1.2): solar position at the middle of each hour, DNI from ERA5
-GHI and DHI, Perez transposition, physical incidence angle modifier, SAPM cell temperature, PVWatts DC model
-(temperature coefficient -0.35 %/K, 8 % DC losses) and the PVWatts inverter clipped at its AC rating.
+GHI and DHI (at most 1.1 times the Ineichen clear-sky DNI for solar zenith 80-88 deg, zero beyond, so that
+near-horizon hours cannot produce beam spikes), Perez transposition, physical incidence angle modifier, SAPM cell
+temperature, PVWatts DC model (temperature coefficient -0.35 %/K) and the PVWatts inverter (98 % nominal
+efficiency with its part-load curve) clipped at its AC rating. Output is counted at the connection point, after
+flat losses for everything not modelled physically:
+
+| Loss | Value | Source |
+|---|---|---|
+| DC: soiling 2 %, shading 3 %, mismatch 2 %, wiring 2 %, connections 0.5 %, light-induced degradation 1.5 %, nameplate 1 % | 11.4 % | default losses of NREL PVWatts v5 (Dobos, NREL/TP-6A20-62641, 2014), without availability |
+| AC, inverter to connection point: MV step-up transformer about 0.8 %, LV and MV cables about 1 % | 2 % | transformer: load and no-load loss limits of EU Regulation 548/2014 (Tier 2) for a 2.5 MVA liquid-immersed unit, applied to the hourly PV profile; cables assumed |
+| Availability | 3 % | PVWatts v5 default |
+
+1 MWp therefore delivers at most 0.79 MW at the connection point (1 / 1.2 x 0.98 x 0.97).
 
 **Wind**: ERA5 wind speed at 100 m (hub height 100 m; other heights are extrapolated with the hourly shear
 exponent between 10 m and 100 m) through an **empirical Senvion MM92 power curve** (2.05 MW, rotor 92.5 m):
@@ -245,8 +259,14 @@ Real 2025 PLN, pre-tax, all in [`config/default.toml`](config/default.toml). Cha
 - **Irradiance.** ERA5 global horizontal irradiation against PVGIS-SARAH3 satellite data, 2020-2023:
   North 1,099 vs 1,091 kWh/m2 per year (+0.7 %), Central 1,109 vs 1,150 (-3.6 %), South-east 1,143 vs 1,178
   (-3.0 %). No correction is applied; if anything, ERA5 is slightly low inland.
-- **PV yield** of 1,170-1,210 kWh/kWp (2020-2025) sits at the upper end of what Polish fixed-tilt plants
-  report: 2020-2025 were sunny years and 8 % DC losses are a modern-plant assumption.
+- **PV yield** against PVGIS's own PV model on SARAH-3 for the same 30 deg south plane and years (crystalline
+  Si, free-standing, PVGIS's default 14 % system loss), 2020-2023: North 1,080 vs 1,010 kWh/kWp (+6.9 %),
+  Central 1,068 vs 1,058 (+1.0 %), South-east 1,090 vs 1,076 (+1.4 %). The model's plane-of-array irradiation is
+  6.1 %, 0.3 % and 0.7 % above PVGIS's although its horizontal irradiation differs by +0.7 %, -3.6 % and -3.0 %:
+  the model gains more from tilting the plane (Perez transposition of ERA5's direct and diffuse split, against
+  PVGIS's own). Inland this offsets ERA5's lower horizontal irradiation; in the North it does not, so the northern
+  PV yield is on the optimistic side. Single years range from 1,040 to 1,141 kWh/kWp (capacity factor
+  11.9-13.0 % per MWp DC, 2020-2025).
 - **Wind.** The North's 38.5 % capacity factor is optimistic compared with the Polish fleet, which is dominated
   by older 2 MW turbines on lower towers; Central and South-east (25-27 %) are close to typical inland values.
 - **The two price years** were slightly sunnier (PV +2-5 %) and less windy (wind -2 to -5 %) than the 2020-2025
@@ -290,8 +310,8 @@ python -m cable_pooling run --workers 8
 
 `fetch` downloads ERA5 (Open-Meteo, three requests of weight 88 in total 264 "calls"; the free tier allows
 10,000 per day per IP and the client keeps a ledger and refuses requests above `--max-weight`), RCE prices
-(PSE) and the PVGIS irradiance check; everything is cached in `data/` (not in the repository). `simulate` runs
-2,568 configurations (2,247 of them LPs) in about 15 minutes on 10 cores; `report` writes `results/`,
+(PSE) and the PVGIS irradiance and yield check; everything is cached in `data/` (not in the repository).
+`simulate` runs 2,568 configurations (2,247 of them LPs) in about 15 minutes on 10 cores; `report` writes `results/`,
 `docs/img/` and `docs/index.html` in about 15 s.
 
 ```
@@ -299,7 +319,7 @@ config/default.toml       sites, technology, sizing grid, costs and finance (wit
 src/cable_pooling/
   openmeteo.py            ERA5 client (Open-Meteo archive), weight ledger, time conventions
   pse_api.py              RCE through pse-opendata (monthly Parquet cache), hourly aggregation
-  pvgis.py                PVGIS-SARAH3 irradiance cross-check
+  pvgis.py                PVGIS-SARAH3 irradiance and PV yield cross-check
   pv.py, wind.py          generation models (pvlib; MM92 curve in data/mm92_kelmarsh_2017.csv)
   dispatch.py             export / storage / curtailment LP behind the connection
   sizing.py               grid search over sizes, in parallel
@@ -307,7 +327,7 @@ src/cable_pooling/
   complementarity.py      correlations, profiles, capture prices
   plots.py, dashboard.py  README charts and the GitHub Pages dashboard
   pipeline.py, cli.py     fetch / simulate / report
-tests/                    46 tests on synthetic data, no network
+tests/                    49 tests on synthetic data, no network
 ```
 
 ## Data and licenses
@@ -318,11 +338,26 @@ Code: MIT.
   [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api), licensed
   **CC BY 4.0**. Contains modified Copernicus Climate Change Service information; neither the European
   Commission nor ECMWF is responsible for any use of it.
-- **Prices**: RCE (*rynkowa cena energii*), PSE S.A., public reports API
-  ([raporty.pse.pl](https://raporty.pse.pl), report `rce-pln`). PSE publishes no explicit open-data licence;
-  the data are used with attribution for analysis.
-- **Irradiance check**: PVGIS-SARAH3 monthly irradiation, (c) European Union, JRC
-  ([PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/)), reuse with attribution.
+- **Prices**: 15-minute RCE (*rynkowa cena energii*), PSE S.A. reports API
+  ([raporty.pse.pl](https://raporty.pse.pl), report `rce-pln`), 1 October 2024 - 30 September 2026, downloaded on
+  31 October 2026. **Terms of use.** PSE publishes conditions for re-using public sector information
+  ([www.pse.pl, BIP, "Ponowne wykorzystywanie informacji sektora publicznego"](https://www.pse.pl/bip/ponowne-wykorzystanie-informacji-publicznej),
+  checked on 31 October 2026). They allow commercial and non-commercial re-use of information published on
+  www.pse.pl free of charge, on condition that the user names the source and the date the information was obtained,
+  removes the PSE logo, and, when the information has been processed, tells recipients that it was changed and how,
+  without misleading them. PSE accepts no liability for processed information and notes that some materials may be
+  protected by copyright or database rights. These conditions are written for www.pse.pl; this project applies them
+  to the reports API of the same operator (to be verified). Attribution as required:
+
+  > Information obtained from www.pse.pl (PSE S.A. report `rce-pln`), state as of 31 October 2026. The
+  > information has been processed: 15-minute prices averaged to hourly means, cut to the business days
+  > 1 October 2024 - 30 September 2026 and used as the price of every exported MWh in a dispatch and sizing model.
+  > `results/` and `docs/` contain only derived values (averages, capture prices, revenues, NPV) and the hourly
+  > mean prices of one example week per site. It is not an official PSE publication.
+
+- **Irradiance and yield check**: PVGIS-SARAH3 monthly irradiation and hourly PV output (PVGIS 5.3 API, `MRcalc`
+  and `seriescalc`), (c) European Union, JRC ([PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/)), reuse with
+  attribution.
 - **Wind power curve**: derived from *Kelmarsh wind farm data*, C. Plumley and R. Takeuchi, Cubico Sustainable
   Investments, [doi:10.5281/zenodo.16807551](https://doi.org/10.5281/zenodo.16807551), **CC BY 4.0**.
 

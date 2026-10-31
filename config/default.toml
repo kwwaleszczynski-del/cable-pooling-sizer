@@ -32,14 +32,22 @@ latitude = 50.70
 longitude = 23.25
 
 [pv]
-# Fixed-tilt, south-facing utility-scale plant; capacity is MWp (DC).
+# Fixed-tilt, south-facing utility-scale plant; capacity is MWp (DC), output counted at the connection point.
 tilt_deg = 30.0
 azimuth_deg = 180.0
 albedo = 0.20
 dc_ac_ratio = 1.20              # inverter AC rating = MWp / dc_ac_ratio
 gamma_pdc = -0.0035             # power temperature coefficient, 1/K (mono c-Si)
-dc_losses = 0.08                # soiling, mismatch, wiring, LID, availability
-inverter_efficiency = 0.98
+# Reflection (IAM), cell temperature and inverter clipping are modelled; the other losses are flat factors.
+# DC: the default losses of NREL PVWatts v5 (Dobos 2014, NREL/TP-6A20-62641) except availability: soiling 2 %,
+# shading 3 %, mismatch 2 %, wiring 2 %, connections 0.5 %, light-induced degradation 1.5 %, nameplate 1 % -> 11.4 %.
+dc_losses = 0.114
+inverter_efficiency = 0.98      # nominal; modern string or central inverter, with the PVWatts part-load curve
+# Inverter to connection point: MV step-up transformer ~0.8 % of the energy (EU Regulation 548/2014, Tier 2 limits
+# for a 2.5 MVA liquid-immersed unit: 18.5 kW load loss at rated power, 1.6 kW no-load loss all year, applied to
+# the hourly PV profile) plus ~1 % in LV and MV cables (assumed).
+ac_losses = 0.02
+availability = 0.97             # PVWatts v5 default availability loss of 3 %
 degradation_per_year = 0.004
 
 [wind]

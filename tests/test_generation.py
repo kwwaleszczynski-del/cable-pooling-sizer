@@ -4,7 +4,7 @@ import pvlib
 import pytest
 
 from cable_pooling.config import PVParams, WindParams
-from cable_pooling.pv import pv_power_per_mwp
+from cable_pooling.pv import plane_of_array, pv_power_per_mwp
 from cable_pooling.wind import hub_height_speed, load_power_curve, power_per_unit, wind_power_per_mw
 
 
@@ -64,9 +64,36 @@ def test_pv_clear_summer_day():
 def test_pv_inverter_clipping():
     hours = clear_sky_hours("2025-06-21")
     hours[["ghi", "dhi"]] *= 1.3                            # over-irradiance pushes DC above the AC rating
-    params = PVParams(dc_ac_ratio=1.5)
+    params = PVParams(dc_ac_ratio=1.5, ac_losses=0.0, availability=1.0)
     out = pv_power_per_mwp(hours, 52.0, 19.0, 100.0, params)
     assert out.max() == pytest.approx(1 / 1.5, rel=1e-6)
+
+
+def test_pv_ac_losses_and_availability_after_clipping():
+    hours = clear_sky_hours("2025-06-21")
+    hours[["ghi", "dhi"]] *= 1.3
+    lossless = pv_power_per_mwp(hours, 52.0, 19.0, 100.0, PVParams(dc_ac_ratio=1.5, ac_losses=0.0, availability=1.0))
+    params = PVParams(dc_ac_ratio=1.5, ac_losses=0.02, availability=0.97)
+    out = pv_power_per_mwp(hours, 52.0, 19.0, 100.0, params)
+    assert np.allclose(out, lossless * 0.98 * 0.97)
+    assert out.max() == pytest.approx(1 / 1.5 * 0.98 * 0.97, rel=1e-6)
+
+
+def test_dni_capped_near_horizon():
+    idx = pd.date_range("2025-12-21 00:00", periods=24, freq="h", tz="UTC")
+    mid = idx + pd.Timedelta("30min")
+    loc = pvlib.location.Location(52.0, 19.0, altitude=100.0)
+    sp = loc.get_solarposition(mid)
+    zen = sp["apparent_zenith"].to_numpy()
+    low = np.flatnonzero((zen >= 80) & (zen < 88))
+    hours = pd.DataFrame({"ghi": 0.0, "dhi": 0.0, "temp_air": 0.0, "wind_10m": 2.0}, index=idx)
+    hours.iloc[low, 0] = 200.0                              # all beam, far above clear sky at a low sun
+    dni_clear = loc.get_clearsky(mid, solar_position=sp)["dni"].to_numpy()
+    assert len(low) > 0 and np.all(200.0 / np.cos(np.radians(zen[low])) > 1.1 * dni_clear[low])
+    poa = plane_of_array(hours, 52.0, 19.0, 100.0, PVParams())["poa_global"].to_numpy()
+    cos_aoi = np.cos(np.radians(pvlib.irradiance.aoi(30.0, 180.0, zen, sp["azimuth"].to_numpy()))).clip(min=0.0)
+    ground = 0.2 * 200.0 * (1 - np.cos(np.radians(30.0))) / 2
+    assert np.all(poa[low] <= 1.1 * dni_clear[low] * cos_aoi[low] + ground + 1e-6)
 
 
 def test_pv_winter_lower_than_summer():

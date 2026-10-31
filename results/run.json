@@ -19,22 +19,22 @@
     {
       "site": "central",
       "pv_mwp": 62.5,
-      "wind_mw": 12.5,
+      "wind_mw": 18.75,
       "battery": "1 G x 4 h",
-      "oversizing": 3.0,
-      "curtailed_pct": 9.954270721397167,
-      "npv_pln": 68743337.89251204,
-      "lcoe_pln_mwh": 445.9236133769432
+      "oversizing": 3.25,
+      "curtailed_pct": 8.555959938486806,
+      "npv_pln": 51979128.515886426,
+      "lcoe_pln_mwh": 465.1465528704677
     },
     {
       "site": "north",
-      "pv_mwp": 37.5,
+      "pv_mwp": 25.0,
       "wind_mw": 31.25,
-      "battery": "1 G x 4 h",
-      "oversizing": 2.75,
-      "curtailed_pct": 8.919975795822147,
-      "npv_pln": 201982251.7018268,
-      "lcoe_pln_mwh": 374.2760509254782
+      "battery": "1 G x 2 h",
+      "oversizing": 2.25,
+      "curtailed_pct": 8.423991573333799,
+      "npv_pln": 193685567.0146842,
+      "lcoe_pln_mwh": 352.242703971163
     },
     {
       "site": "southeast",
@@ -42,10 +42,10 @@
       "wind_mw": 12.5,
       "battery": "1 G x 4 h",
       "oversizing": 3.0,
-      "curtailed_pct": 9.921183450886138,
-      "npv_pln": 82468618.83647008,
-      "lcoe_pln_mwh": 438.88148085236736
+      "curtailed_pct": 8.033244624780144,
+      "npv_pln": 64548086.504043594,
+      "lcoe_pln_mwh": 460.2272824496311
     }
   ],
-  "report_seconds": 15.7
+  "report_seconds": 18.1
 }

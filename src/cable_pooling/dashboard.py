@@ -351,7 +351,8 @@ const A = D.assumptions;
 $("disc").innerHTML = `Assumptions (illustrative, real PLN, pre-tax): PV ${fmt(A.pv_capex / 1e6, 2)} m PLN/MWp, wind ${fmt(A.wind_capex / 1e6, 2)} m PLN/MW, `
   + `battery ${fmt(A.bess_capex_mwh / 1e6, 2)} m PLN/MWh + power part, discount rate ${fmt(100 * A.discount_rate, 1)} %, ${A.lifetime_years} years, prices of `
   + `${D.economic_window[0]} to ${D.economic_window[1]} repeated every year. Battery charges only from on-site generation; dispatch has perfect foresight (upper bound). `
-  + `This is a portfolio model, not investment or legal advice. Data: ERA5 via Open-Meteo (CC BY 4.0), RCE prices from PSE S.A. (raporty.pse.pl). `
+  + `This is a portfolio model, not investment or legal advice. Data: ERA5 via Open-Meteo (CC BY 4.0; contains modified Copernicus Climate Change Service information). `
+  + `Information obtained from www.pse.pl (PSE S.A. report rce-pln), state as of 31 October 2026; processed into hourly means and used in the dispatch model, not an official PSE publication. `
   + `Code and full assumptions: <a href="https://github.com/kwwaleszczynski-del/cable-pooling-sizer">github.com/kwwaleszczynski-del/cable-pooling-sizer</a>. Generated ${D.generated}.`;
 draw();
 </script>

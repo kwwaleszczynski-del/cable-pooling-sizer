@@ -1,4 +1,4 @@
-site,era5_kwh_m2_year,sarah3_kwh_m2_year,ratio,years
-north,1098.681,1091.155,1.007,2020-2023
-central,1108.755,1149.678,0.964,2020-2023
-southeast,1143.345,1178.135,0.970,2020-2023
+site,era5_kwh_m2_year,sarah3_kwh_m2_year,ratio,years,model_poa_kwh_m2_year,pvgis_poa_kwh_m2_year,poa_ratio,model_kwh_kwp_year,pvgis_kwh_kwp_year,yield_ratio
+north,1098.681,1091.155,1.007,2020-2023,1350.503,1272.897,1.061,1079.743,1009.776,1.069
+central,1108.755,1149.678,0.964,2020-2023,1346.750,1342.510,1.003,1067.592,1057.504,1.010
+southeast,1143.345,1178.135,0.970,2020-2023,1376.683,1366.504,1.007,1090.496,1075.799,1.014

@@ -30,8 +30,10 @@ class PVParams:
     albedo: float = 0.2
     dc_ac_ratio: float = 1.2
     gamma_pdc: float = -0.0035
-    dc_losses: float = 0.08
+    dc_losses: float = 0.114
     inverter_efficiency: float = 0.98
+    ac_losses: float = 0.02
+    availability: float = 0.97
     degradation_per_year: float = 0.004
 
 

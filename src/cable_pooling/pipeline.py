@@ -22,6 +22,7 @@ from cable_pooling.config import Config
 from cable_pooling.dispatch import dispatch
 from cable_pooling.economics import bess_label
 from cable_pooling.profiles import SiteProfiles, load_prices, site_profiles
+from cable_pooling.pv import plane_of_array
 from cable_pooling.sizing import battery, sweep
 
 REPORT_GRID_MW = 25.0       # connection size used for the README tables and charts
@@ -35,6 +36,8 @@ def fetch(cfg: Config, data_dir: Path, refresh: bool = False, max_weight: float 
     for site in cfg.sites:
         prof = site_profiles(cfg, site, data_dir, prices, refresh=refresh, max_weight=max_weight)
         pvgis.fetch_monthly(site, *PVGIS_YEARS, cache_dir=data_dir / "pvgis", refresh=refresh)
+        pvgis.fetch_pv_yearly(site, cfg.pv.tilt_deg, cfg.pv.azimuth_deg, *PVGIS_YEARS, cache_dir=data_dir / "pvgis",
+                              refresh=refresh)
         log.info("%s: %d weather hours", site.key, len(prof.hourly))
 
 
@@ -136,14 +139,27 @@ def example_week(prof: SiteProfiles, cfg: Config, row: pd.Series) -> pd.DataFram
 
 
 def irradiance_check(cfg: Config, profiles: list[SiteProfiles], data_dir: Path) -> pd.DataFrame:
+    """ERA5 vs PVGIS-SARAH3 horizontal irradiation, and the model's plane-of-array irradiation and PV yield vs
+    PVGIS's own PV model (default 14 % system loss) for the same plane, per year over PVGIS_YEARS."""
     rows = []
     for prof in profiles:
         m = pvgis.fetch_monthly(prof.site, *PVGIS_YEARS, cache_dir=data_dir / "pvgis")
         c = pvgis.compare(m, prof.weather)
         years = c["year"].nunique()
+        ref = pvgis.fetch_pv_yearly(prof.site, cfg.pv.tilt_deg, cfg.pv.azimuth_deg, *PVGIS_YEARS,
+                                    cache_dir=data_dir / "pvgis").set_index("year")
+        poa = plane_of_array(prof.weather, prof.site.latitude, prof.site.longitude, prof.elevation_m,
+                             cfg.pv)["poa_global"] / 1000.0
+        model_poa = poa.groupby(poa.index.year).sum().reindex(ref.index)
+        pv = prof.hourly["pv"]
+        model_yield = pv.groupby(pv.index.year).sum().reindex(ref.index)
         rows.append({"site": prof.site.key, "era5_kwh_m2_year": c["era5_kwh_m2"].sum() / years,
                      "sarah3_kwh_m2_year": c["sarah3_kwh_m2"].sum() / years,
-                     "ratio": c["era5_kwh_m2"].sum() / c["sarah3_kwh_m2"].sum(), "years": f"{PVGIS_YEARS[0]}-{PVGIS_YEARS[1]}"})
+                     "ratio": c["era5_kwh_m2"].sum() / c["sarah3_kwh_m2"].sum(), "years": f"{PVGIS_YEARS[0]}-{PVGIS_YEARS[1]}",
+                     "model_poa_kwh_m2_year": model_poa.mean(), "pvgis_poa_kwh_m2_year": ref["pvgis_poa_kwh_m2"].mean(),
+                     "poa_ratio": model_poa.sum() / ref["pvgis_poa_kwh_m2"].sum(),
+                     "model_kwh_kwp_year": model_yield.mean(), "pvgis_kwh_kwp_year": ref["pvgis_kwh_kwp"].mean(),
+                     "yield_ratio": model_yield.sum() / ref["pvgis_kwh_kwp"].sum()})
     return pd.DataFrame(rows)
 
 
