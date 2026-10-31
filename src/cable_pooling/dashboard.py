@@ -142,6 +142,8 @@ th:first-child, td:first-child { text-align: left; }
 .disclaimer { margin-top: 32px; padding: 12px; border-left: 3px solid var(--axis); color: var(--ink2); font-size: 13px; }
 a { color: var(--wind); }
 @media (max-width: 820px) { .grid2 { grid-template-columns: 1fr; } .chart { height: 360px; } }
+.chart.tall { height: 560px; }
+.scroll { overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -175,11 +177,11 @@ Right: the best NPV reachable at each oversizing level (PV MWp + wind MW per MW 
 <p class="note" id="compnote"></p>
 
 <h2>Dispatch in the week with most negative prices</h2>
-<div class="card"><div id="week" class="chart"></div></div>
+<div class="card"><div id="week" class="chart tall"></div></div>
 <p class="note" id="weeknote"></p>
 
 <h2>Best configuration per battery option</h2>
-<div class="card"><table id="table"></table></div>
+<div class="card scroll"><table id="table"></table></div>
 
 <div class="disclaimer" id="disc"></div>
 </main>
@@ -207,7 +209,7 @@ function layout(extra) {
     margin: {l: 56, r: 16, t: 40, b: 48}, hoverlabel: {font: {size: 12}},
     xaxis: {gridcolor: css("--grid"), linecolor: css("--axis"), zeroline: false},
     yaxis: {gridcolor: css("--grid"), linecolor: css("--axis"), zeroline: false},
-    legend: {orientation: "h", y: -0.2},
+    legend: {orientation: "h", y: -0.28, yanchor: "top"},  // hangs below the axis title instead of growing onto it
   }, extra);
 }
 const CONF = {displaylogo: false, responsive: true, modeBarButtonsToRemove: ["lasso2d", "select2d"]};
@@ -325,7 +327,7 @@ function drawWeek(c) {
     yaxis2: {title: "MWh", domain: [0.26, 0.42], gridcolor: css("--grid")},
     yaxis3: {title: "PLN/MWh", domain: [0, 0.2], gridcolor: css("--grid"), zeroline: true, zerolinecolor: css("--axis")},
     shapes: [{type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 1, y1: 1, line: {color: css("--ink2"), width: 1}}],
-    legend: {orientation: "h", y: -0.14}, margin: {l: 56, r: 16, t: 24, b: 80},
+    legend: {orientation: "h", y: -0.14, yanchor: "top"}, margin: {l: 56, r: 16, t: 24, b: 80},
   }), CONF);
   $("weeknote").textContent = `${c.site.name}, ${w.label} (best NPV with a battery, ${D.report_grid} MW connection). The line at 1.0 is the connection limit. Same for every connection size, since everything scales with G.`;
 }

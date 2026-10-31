@@ -66,7 +66,9 @@ def complementarity(profiles, names: dict, path: Path) -> None:
         ax.grid(axis="x", visible=False)
         if j == 0:
             ax.set_ylabel("capacity factor")
-    axes[0, 0].legend(loc="upper left", fontsize=8)
+    # beside the title: inside the first panel the rising PV + wind curve crossed it
+    fig.legend(*axes[0, 0].get_legend_handles_labels(), loc="upper right", bbox_to_anchor=(0.995, 1.0), ncol=3,
+               fontsize=8.5, frameon=False)
     fig.suptitle(f"PV and wind complement each other over the day and the year (ERA5 "
                  f"{profiles[0].hourly.index.year.min()}-{profiles[0].hourly.index.year.max()})",
                  x=0.01, ha="left", fontsize=12, fontweight="bold", color=INK)
